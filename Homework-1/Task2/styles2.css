@@ -1,0 +1,26 @@
+ *{margin: 0px; padding: 0px;}
+body{background-color: #2E8B57;} 
+.buttons{
+	width: 500px;
+	margin: 100px auto;
+}
+	button{
+		font: 0.9375em "Segoe UI";
+		cursor: pointer;
+		height: 75px;
+		width: 160px;
+		border: none;
+		background-color: white;
+		border-radius: 5px;
+		box-shadow: 0px 2px 1px 1px #D0D0D0;
+		transition-duration: 0.6s;
+		}
+		button:hover{
+			background-color: #FA8072;
+			color: #FAE2E0;
+		}
+		button:active {
+			border: none;
+			transform: translateY(2px);
+		}
+	
