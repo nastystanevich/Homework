@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+    <script type="text/javascript" src="js.js"></script>
+
+    <title>Homework 2</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Homework 2</h1>
+
+        <button type="submit" class="btn btn-success" data-toggle="modal" data-target="#newRecord">Создать</button>
+
+
+        <table class="table table-bordered" id="infoTable">
+            <thead>
+                <tr>
+                    <th>Тип компьютера</th>
+                    <th>Производитель</th>
+                    <th>Тактовая частота</th>
+                    <th>Разрядность архитектуры</th>
+                    <th>Наличие Hyper-Threading</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <button class="btn btn-link text-success" id="edit">Редактировать</button>
+                        <button class="btn btn-link" id="info">Подробнее</button>
+                        <button class="btn btn-link text-danger" onclick="deleteRow(this);">Удалить</button>
+                    </td>
+                </tr> -->
+            </tbody>
+        </table>
+
+        <div class="modal fade" id="newRecord">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Новая запись:</h4>
+                        <button type="button" class="close" data-dismiss="modal" onclick="cleanForm()">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form onsubmit="return false;">
+                            <div class="form-group has-success ultrabook server">
+                                <label for="computerType">Тип компьютера:</label>
+                                <select id="computerType" name="computerType" class="form-control form-control-sm is-valid"
+                                onchange="selectType()">
+                                    <option>Ультрабук</option>
+                                    <option>Вычислительный сервер</option>
+                                </select>
+                            </div>
+                            <div class="form-group has-danger ultrabook server">
+                                <label for="producer">Производитель:</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="Asus" 
+                                id="producer" name="producer" onchange="validate(this);">
+                                <div class="invalid-feedback">
+                                    Введите производителя
+                                </div>
+                            </div>
+                            <div class="form-group has-danger ultrabook">
+                                <label for="OS">Операционная система:</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="Windows 10"
+                                id="OS" name="OS" onchange="validate(this);">
+                                <div class="invalid-feedback">
+                                    Нет такой ОС (либо введите "другое")
+                                </div>
+                            </div>
+                            <div class="form-group has-danger ultrabook invalid">
+                                <label for="screenSize">Диагоаль экрана:</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="10.0''" 
+                                id="screenSize" name="screenSize" onchange="validate(this);">
+                                <div class="invalid-feedback">
+                                    Экран м.б. от 10 до 20 дюймов
+                                </div>
+                            </div>
+                            <div class="form-group has-success form-check ultrabook">
+                                <label class="form-check-label">
+                                    <input class="form-check-input is-valid" type="checkbox" id="touchScreen" name="touchScreen">
+                                    Сенсорный экран
+                                </label>
+                            </div>
+                            <div class="form-group has-success ultrabook">
+                                <label for="processorModel">Модель процессора</label>
+                                <select id="processorModel" class="form-control form-control-sm is-valid">
+                                    <option>AMD</option>
+                                    <option>Intel Celeron</option>
+                                    <option>Intel Core</option>
+                                    <option>Intel Pentium</option>
+                                </select>
+                            </div>
+                            <div class="form-group has-danger ultrabook">
+                                <label for="RAM">Объем оперативной памяти:</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="1 ГБ" 
+                                id="RAM" name="RAM" onchange="validate(this);">
+                                <div class="invalid-feedback">
+                                    От 1Гб до 32Гб
+                                </div>
+                            </div>
+                            <div class="form-group has-success ultrabook">
+                                <label for="">Тип видеокарты:</label>
+                                <select id="videoCardType" class="form-control form-control-sm is-valid">
+                                    <option>дискретная</option>
+                                    <option>встроенная</option>
+                                    <option>переключаемая</option>
+                                </select>
+                            </div>
+                            <div class="form-group has-success form-check ultrabook">
+                                <label class="form-check-label">
+                                    <input class="form-check-input is-valid" type="checkbox" id="cd_dvd" name="cd_dvd">
+                                    CD/DVD привод (дисковод)
+                                </label>
+                            </div>
+                            <div class="form-group has-danger server d-none">
+                                <label for="processorAmount">Кол-во процессоров:</label>
+                                <input type="text" class="form-control form-control-sm"
+                                id="processorAmount" name="processorAmount" onchange="validate(this);">
+                                <div class="invalid-feedback">
+                                    Столько не бывает
+                                </div>
+                            </div>
+                            <div class="form-group has-danger  ultrabook server">
+                                <label for="clock">Тактовая частота:</label>
+                                <input type="text" class="form-control form-control-sm" placeholder="1100 МГц"
+                                id="clock" name="clock" onchange="validate(this);">
+                                <div class="invalid-feedback">
+                                    1100 - 3700 МГц
+                                </div>
+                            </div>
+                            <div class="form-group has-success form-check  ultrabook server">
+                                <label class="form-check-label">
+                                    <input class="form-check-input is-valid" type="checkbox" id="hyper" name="hyper">
+                                    Наличие технологии Hyper-Threading
+                                </label>
+                            </div>
+                            <div class="form-group has-success  ultrabook server">
+                                <label for="bitCapacity">Разрядность архитектуры:</label>
+                                <select id="bitCapacity" class="form-control form-control-sm is-valid">
+                                    <option>32</option>
+                                    <option>64</option>
+                                    <option>86</option>
+                                </select>
+                            </div>
+                            <div class="form-group has-danger server d-none">
+                                <label for="powerSupplyAmount">Кол-во блоков питания:</label>
+                                <input type="text" class="form-control form-control-sm" 
+                                id="powerSupplyAmount" name="powerSupplyAmount" onchange="validate(this);">
+                                <div class="invalid-feedback">
+                                    1-5
+                                </div>
+                            </div>
+                            <div class="form-group has-danger server d-none">
+                                <label for="portsAmount">Кол-во Ethernet портов:</label>
+                                <input type="text" class="form-control form-control-sm" 
+                                id="portsAmount" name="portsAmount" onchange="validate(this);">
+                                <div class="invalid-feedback">
+                                    1-5
+                                </div>
+                            </div>
+                            <div class="form-group has-success server d-none">
+                                <label for="height">Высота сервера:</label>
+                                <select id="height" class="form-control form-control-sm is-valid">
+                                    <option>1U</option>
+                                    <option>2U</option>
+                                    <option>4U</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" id = "save" onclick="createObject();" disabled>Сохранить</button>
+                            <button type="button" class="btn btn-secondary" id = "clean" onclick="cleanForm()">Очистить</button>
+                            <button type="button" class="btn btn-danger d-none" id = "change" onclick="changeObject()">Изменить</button>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    
+</body>
+</html>
