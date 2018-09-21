@@ -9,6 +9,11 @@ table{
     margin-top: 10px;
     text-align: center;
 }
+#fullInfoTable{
+    margin: auto;
+    text-align: left;
+    width: 900px;
+}
 .btn-link{
     padding: 0%;
 }

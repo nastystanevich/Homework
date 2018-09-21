@@ -34,18 +34,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <button class="btn btn-link text-success" id="edit">Редактировать</button>
-                        <button class="btn btn-link" id="info">Подробнее</button>
-                        <button class="btn btn-link text-danger" onclick="deleteRow(this);">Удалить</button>
-                    </td>
-                </tr> -->
             </tbody>
         </table>
 
@@ -81,7 +69,7 @@
                                 <input type="text" class="form-control form-control-sm" placeholder="Windows 10"
                                 id="OS" name="OS" onchange="validate(this);">
                                 <div class="invalid-feedback">
-                                    Нет такой ОС (либо введите "другое")
+                                    Нет такой ОС (либо введите "другая")
                                 </div>
                             </div>
                             <div class="form-group has-danger ultrabook invalid">
@@ -186,7 +174,7 @@
 
                             <button type="submit" class="btn btn-primary" id = "save" onclick="createObject();" disabled>Сохранить</button>
                             <button type="button" class="btn btn-secondary" id = "clean" onclick="cleanForm()">Очистить</button>
-                            <button type="button" class="btn btn-danger d-none" id = "change" onclick="changeObject()">Изменить</button>
+                            <button type="button" class="btn btn-danger d-none" id = "change" >Изменить</button>
 
                         </form>
                     </div>

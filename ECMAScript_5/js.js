@@ -38,25 +38,25 @@ function validate(inputField){
             reg = /\w+|[а-я]/i;
             break;
         case 'OS':
-            reg = /windows|linux|ios|(mac\s*os)|другая/i;
+            reg = /^(windows|linux|ios|(mac\s*os)|другая)$/i;
             break;
-        case 'screenSize':
-            reg = /[10-20]\d/;
+        case 'screenSize': 
+            reg = /^(1[\d]|20)$/;
             break;
         case 'RAM':
-            reg = /1|2|4|8|16|32|64/;
+            reg = /^(1|2|4|8|16|32|64)$/;
             break;
         case 'processorAmount':
-            reg = /[1-10]/;
+            reg = /^([1-9]|10)$/;
             break;
         case 'clock':
-            reg = /[1100-3700]/;
+            reg = /^([1-2][1-9]00|3[1-7]00)$/; 
             break;
         case 'powerSupplyAmount':
-            reg = /[1-10]/;
+            reg = /^([1-9]|10)$/;
             break;
         case 'portsAmount':
-            reg = /[1-10]\d/;
+            reg = /^([1-9]|10)$/;
             break;    
     };
     if (!reg.test(inputField.value)){
@@ -84,7 +84,7 @@ function validate(inputField){
     t += ' has-danger';
     if (document.getElementsByClassName(t).length == 0){
         document.getElementById("save").removeAttribute("disabled");
-    }
+    };
 };
 //КЛАССЫ
 function Computer(){
@@ -107,7 +107,7 @@ function Computer(){
        _bitCapacity = bitCapacity;
     };
     this.setHyperThreading = function(hyper){
-        _hyper = hyper;
+        _hyper = hyper.checked;
     };
     //геттеры
     this.getProducer = function(){
@@ -147,7 +147,7 @@ function Ultrabook(){
         _screenSize = screenSize;
     };
     this.setTouchScreen = function(touchScreen){
-        _touchScreen = touchScreen;
+        _touchScreen = touchScreen.checked;
     };
     this.setProcessorModel = function(processorModel){
         _processorModel = processorModel;
@@ -159,7 +159,7 @@ function Ultrabook(){
         _videoCardType = videoCardType;
     };
     this.setCD_DVD = function(cd_dvd){
-        _cd_dvd = cd_dvd;
+        _cd_dvd = cd_dvd.checked;
     };
     ///геттреры
     this.getOS = function(){
@@ -232,12 +232,13 @@ function createObject(){
     switch (type) {
         case 'Ультрабук':
             var obj = new Ultrabook();
-            obj.setOS(document.getElementById("OS").value),
-            obj.setScreenSize(document.getElementById("screenSize").value),
-            obj.setTouchScreen(document.getElementById("touchScreen").value),
-            obj.setProcessorModel(document.getElementById("processorModel").value),
-            obj.setRAM(document.getElementById("RAM").value),
-            obj.setCD_DVD(document.getElementById("cd_dvd").value)
+            obj.setOS(document.getElementById("OS").value);
+            obj.setScreenSize(document.getElementById("screenSize").value);
+            obj.setTouchScreen(document.getElementById("touchScreen"));
+            obj.setProcessorModel(document.getElementById("processorModel").value);
+            obj.setRAM(document.getElementById("RAM").value);
+            obj.setVideoCardType(document.getElementById("videoCardType").value);
+            obj.setCD_DVD(document.getElementById("cd_dvd"));
             break;
         case 'Вычислительный сервер':
             var obj = new Server();
@@ -251,7 +252,7 @@ function createObject(){
     obj.setProducer(document.getElementById("producer").value);
     obj.setClockFrequency(document.getElementById("clock").value);
     obj.setBitCapacity(document.getElementById("bitCapacity").value);
-    obj.setHyperThreading(document.getElementById("hyper").value);
+    obj.setHyperThreading(document.getElementById("hyper"));
 
     arrObjects[arrObjects.length] = obj;
 
@@ -265,7 +266,7 @@ function createObject(){
 function addRow(id, type, producer, clock, capacity, hyper){ //добавляет объект в главную таблицу
     var row = document.getElementById("infoTable").insertRow();
     row.id = id;
-    var td1=row.insertCell(0);
+    var td1 = row.insertCell(0);
     var td2 = row.insertCell(1);
     var td3 = row.insertCell(2);
     var td4 = row.insertCell(3);
@@ -300,84 +301,118 @@ function editObject(r){
     switch (obj.getType()) {
         case 'Ультрабук':
             document.getElementById("OS").value = obj.getOS();
-            document.getElementById("screenSize").value = obj.getScreenSize();
-            document.getElementById("touchScreen").value = obj.getTouchScreen();
+            document.getElementById("screenSize").value =
+                            parseInt(obj.getScreenSize());
+            if (obj.getTouchScreen() == 'есть'){
+                document.getElementById("touchScreen").checked = true;
+            }
+            else{
+                document.getElementById("touchScreen").checked = false;
+            };
             document.getElementById("processorModel").value = obj.getProcessorModel();
-            document.getElementById("RAM").value = obj.getRAM();
-            document.getElementById("cd_dvd").value = obj.getCD_DVD();
+            document.getElementById("RAM").value = parseInt(obj.getRAM());
+            document.getElementById("videoCardType").value = obj.getVideoCardType();
+            if (obj.getCD_DVD() == 'есть'){
+                document.getElementById("cd_dvd").checked = true;
+            }
+            else{
+                document.getElementById("cd_dvd").checked = false;
+            };
             break;
         case 'Вычислительный сервер':
-            document.getElementById("processorAmount").value = obj.getProcessorAmount();
-            document.getElementById("powerSupplyAmount").value = obj.getPowerSupplyAmount();
-            document.getElementById("portsAmount").value = obj.getPortsAmount();
-            document.getElementById("height").value = obj.getHeight();
+            document.getElementById("processorAmount").value = 
+                        parseInt(obj.getProcessorAmount());
+            document.getElementById("powerSupplyAmount").value =
+                        parseInt(obj.getPowerSupplyAmount());
+            document.getElementById("portsAmount").value = 
+                        parseInt(obj.getPortsAmount());
+            document.getElementById("height").value = obj.getHeight(); //list
             break;
     };
     document.getElementById("producer").value = obj.getProducer();
-    document.getElementById("clock").value = obj.getClockFrequency();
-    document.getElementById("bitCapacity").value = obj.getBitCapacity();
-    document.getElementById("hyper").value = obj.getHyperThreading();
+    document.getElementById("clock").value = parseInt(obj.getClockFrequency());
+    document.getElementById("bitCapacity").value = obj.getBitCapacity().replace(/^\D+$/gi , "");
+    if (obj.getHyperThreading() == 'есть'){
+        document.getElementById("hyper").checked = true;
+    }
+    else{
+        document.getElementById("hyper").checked = false;
+    };
 
+    change.onclick = function(){//переписывает св-ва объекта
+        switch (obj.getType()) {
+        case 'Ультрабук':
+            obj.setOS(document.getElementById("OS").value);
+            obj.setScreenSize(document.getElementById("screenSize").value);
+            obj.setTouchScreen(document.getElementById("touchScreen").value);
+            obj.setProcessorModel(document.getElementById("processorModel").value);
+            obj.setRAM(document.getElementById("RAM").value);
+            obj.setCD_DVD(document.getElementById("cd_dvd").value);
+            break;
+        case 'Вычислительный сервер':
+            obj.setProcessorAmount(document.getElementById("processorAmount").value);
+            obj.setPowerSupplyAmount(document.getElementById("powerSupplyAmount").value);
+            obj.setPortsAmount(document.getElementById("portsAmount").value);
+            obj.setHeight(document.getElementById("height").value); 
+            break;
+        };
+        obj.setType(document.getElementById("computerType").value);
+        obj.setProducer(document.getElementById("producer").value);
+        obj.setClockFrequency(document.getElementById("clock").value);
+        obj.setBitCapacity(document.getElementById("bitCapacity").value);
+        obj.setHyperThreading(document.getElementById("hyper").value);
+
+        //РЕДАКТИРУЕТ ТАБЛИЦУ
+        var row = r.parentNode.parentNode.id;
+        var tds = document.getElementById(row).getElementsByTagName("td");
+        
+        tds[0].innerHTML = obj.getType();
+        tds[1].innerHTML = obj.getProducer();
+        tds[2].innerHTML = obj.getClockFrequency(); 
+        tds[3].innerHTML = obj.getBitCapacity();
+        tds[4].innerHTML = obj.getHyperThreading();
+    };
 };
-function changeObject(){
-    //?
-};
-
-
-
+        
 //HOMEWORK 3
 function openInformation(r){
     var rowObj = r.parentNode.parentNode.id;
-    /* alert(rowObj); */
     var obj = arrObjects[rowObj];
-    var  newWin = window.open("info.html");
 
+    var  newWin = window.open();
     
-    alert(documentm.getElementById("type").innerHTML);
-    /* document.getElementById("prod").innerHTML = obj.getProducer();
-    document.getElementById("clock").innerHTML = obj.getClockFrequency();
-    document.getElementById("capacity").innerHTML = obj.getBitCapacity();
-    document.getElementById("hyper").innerHTML = obj.getHyperThreading(); */
-    
+    newWin.document.write("<h3>Подробная информация</h3>");
 
+    newWin.document.write("Тип: " + obj.getType() + "<br>");
+    newWin.document.write("Производитель: " + obj.getProducer() + "<br>");
+    newWin.document.write("Тактовая частота: " + obj.getClockFrequency() + "<br>");
+    newWin.document.write("Разрядность архитектуры: " + obj.getBitCapacity() + "<br>");
+    newWin.document.write("Наличие технологии Hyper-Threading: " + obj.getHyperThreading() + "<br>");
 
-    
-
-    
-
-
-    /* var row = document.getElementById("fullInfoTable").insertRow(); */
-   /* var td1 = row.insertCell(0);
-    var td2 = row.insertCell(1);
-    td1.innerHTML = ""
-    var td3 = row.insertCell(2);
-    var td4 = row.insertCell(3);
-    var td5 = row.insertCell(4);
-    td1.innerHTML = obj.getType();
-    td2.innerHTML = obj.getProducer();
-    td3.innerHTML = obj.getClockFrequency(); 
-    td4.innerHTML = obj.getBitCapacity();
-    td5.innerHTML = obj.getHyperThreading();
-
-    if (obj.getType == "Ультрабук"){
-        var td6 = row.insertCell(5);
-        var td7 = row.insertCell(6);
-        var td8 = row.insertCell(7);
-        var td9 = row.insertCell(8);
-        var td10 = row.insertCell(9);
-        var td11 = row.insertCell(10);
-        var td12 = row.insertCell(11);
-
-        td6.innerHTML = obj.getOS();
-        td7.innerHTML = obj.getScreenSize();
-        td8.innerHTML = obj.getTouchScreen();
-        td9.innerHTML = obj.getProcessorModel();
-        td10.innerHTML = obj.getRAM();
-        td11.innerHTML = obj.getVideoCardType();
-        td12.innerHTML = obj.getCD_DVD();
-
-    }
-    else{
-
-    } */
-}
+    switch (obj.getType()) {
+        case 'Ультрабук':
+            newWin.document.write("Операционная система: " 
+                                + obj.getOS() + "<br>");
+            newWin.document.write("Размер экрана: "
+                                + obj.getScreenSize() + "<br>");
+            newWin.document.write("Сенсорный экран: " 
+                                + obj.getTouchScreen() + "<br>");
+            newWin.document.write("Модель процессора: " 
+                                + obj.getProcessorModel() + "<br>");
+            newWin.document.write("Объем операционной памяти: " 
+                                + obj.getRAM() + "<br>");
+            newWin.document.write("Наличие CD/DVD дисковода: " 
+                                + obj.getCD_DVD() + "<br>");
+            break;
+        case 'Вычислительный сервер':
+            newWin.document.write("Количество процессоров: " 
+                                + obj.getProcessorAmount() + "<br>");
+            newWin.document.write("Количество блоков питания: " 
+                                + obj.getPowerSupplyAmount() + "<br>");
+            newWin.document.write("Количество портов: " 
+                                + obj.getPortsAmount() + "<br>");
+            newWin.document.write("Высота: " 
+                                + obj.getHeight() + "<br>");
+            break;
+    };
+};
