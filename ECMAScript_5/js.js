@@ -50,7 +50,7 @@ function validate(inputField){
             reg = /^([1-9]|10)$/;
             break;
         case 'clock':
-            reg = /^([1-2][1-9]00|3[1-7]00)$/; 
+            reg = /^([1-2][0-9]00|3[0-7]00)$/; 
             break;
         case 'powerSupplyAmount':
             reg = /^([1-9]|10)$/;
@@ -416,3 +416,84 @@ function openInformation(r){
             break;
     };
 };
+function loadToServer(){
+    var xhr = new XMLHttpRequest();
+    var obj = [];
+    for (var i = 0; i < arrObjects.length; i++){
+        obj[i] = {
+            type : arrObjects[i].getType(),
+            producer : arrObjects[i].getProducer(),
+            clock : arrObjects[i].getClockFrequency(),
+            bitCapacity : arrObjects[i].getBitCapacity(),
+            hyper : arrObjects[i].getHyperThreading(),
+
+            OS : arrObjects[i].getType() == "Ультрабук" ? 
+                            arrObjects[i].getOS() : "",
+            screenSize : arrObjects[i].getType() == "Ультрабук" ? 
+                            arrObjects[i].getScreenSize() : "",
+            touchScreen : arrObjects[i].getType() == "Ультрабук" ? 
+                            arrObjects[i].getTouchScreen() : "",
+            proccesorModel : arrObjects[i].getType() == "Ультрабук" ? 
+                            arrObjects[i].getProcessorModel() : "",
+            RAM : arrObjects[i].getType() == "Ультрабук" ? 
+                            arrObjects[i].getRAM() : "",
+            videoCard : arrObjects[i].getType() == "Ультрабук" ?
+                            arrObjects[i].getVideoCardType() : "",
+            cddvd : arrObjects[i].getType() == "Ультрабук" ? 
+                            arrObjects[i].getCD_DVD() : "",
+
+            processorAmount: arrObjects[i].getType() == "Вычислительный сервер" ? 
+                            arrObjects[i].getProcessorAmount() : "",
+            powerSupplyAmount: arrObjects[i].getType() == "Вычислительный сервер" ? 
+                            arrObjects[i].getPowerSupplyAmount() : "",                
+            portsAmount: arrObjects[i].getType() == "Вычислительный сервер" ? 
+                            arrObjects[i].getPortsAmount() : "",
+            height: arrObjects[i].getType() == "Вычислительный сервер" ? 
+                            arrObjects[i].getHeight() : ""
+        };
+        xhr.open('POST', '/objects', true);
+	    xhr.setRequestHeader("Content-type","application/json");
+        xhr.send(JSON.stringify(obj[i]));
+    };
+};
+function downloadFromServer(){
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/objects', false);
+    xhr.send();
+
+    if (xhr.status != 200) { //проверка соединения с сервером
+	  alert( xhr.status + ': ' + xhr.statusText ); // вывод ошибки
+	} else {
+	  var obj = JSON.parse(xhr.responseText);
+    };
+
+    var  newWin = window.open();
+    newWin.document.write("<br><br><h3>Объекты из БД</h3>");
+
+    for (var i = 0; i < obj.length; i++){
+            newWin.document.write(`<br><br>Тип: ${obj[i].type}<br>`);
+            newWin.document.write(`Производитель: ${obj[i].producer}<br>`);
+            newWin.document.write(`Тактовая частота: ${obj[i].clock}<br>`);
+            newWin.document.write(`Разрядность архитектуры: ${obj[i].capacity}<br>`);
+            newWin.document.write(`Наличие технологии Hyper-Threading: ${obj[i].hyper}<br>`);
+        
+        switch (obj[i].type) {
+            case 'Ультрабук':
+                newWin.document.write(`Операционная система: ${obj[i].OS}<br>`);
+                newWin.document.write(`Размер экрана: ${obj[i].screenSize}<br>`);
+                newWin.document.write(`Сенсорный экран: ${obj[i].touchScreen}<br>`);
+                newWin.document.write(`"Модель процессора: ${obj[i].processorModel}<br>`);
+                newWin.document.write(`Объем операционной памяти: ${obj[i].RAM}<br>`);
+                newWin.document.write(`Тип видеокарты: ${obj[i].videoCard}<br>`);
+                newWin.document.write(`Наличие CD/DVD дисковода: ${obj[i].cddvd}<br>`);
+            break;
+            case 'Вычислительный сервер':
+                newWin.document.write(`Количество процессоров: ${obj[i].processorAmount}<br>`);
+                newWin.document.write(`Количество блоков питания: ${obj[i].powerSupplyAmount}<br>`);
+                newWin.document.write(`Количество портов: ${obj[i].portsAmount}<br>`);
+                newWin.document.write(`Высота: ${obj[i].height}<br>`);
+            break;
+
+        };
+    };
+};   

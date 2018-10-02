@@ -12,15 +12,17 @@
 
     <link rel="stylesheet" href="styles.css">
     <script type="text/javascript" src="js.js"></script>
+    <script type="text/javascript" src="dpd.js"></script>
 
-    <title>Homework 2</title>
+    <title>Homework 2-3</title>
 </head>
 <body>
     <div class="container">
-        <h1>Homework 2</h1>
+        <h1>Homework 2-3</h1>
 
         <button type="submit" class="btn btn-success" data-toggle="modal" data-target="#newRecord">Создать</button>
-
+        <button class="btn btn-secondary btn-sm" onclick="loadToServer();">Загрузить объекты в базу</button>
+        <button class="btn btn-secondary btn-sm" onclick="downloadFromServer();">Показать объекты в базе</button>
 
         <table class="table table-bordered" id="infoTable">
             <thead>
